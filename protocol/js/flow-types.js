@@ -5511,7 +5511,8 @@ export type provisionUiChooseProvisioningMethodRpcParam = Exact<{
 export type provisionUiDisplayAndPromptSecretRpcParam = Exact<{
   secret: bytes,
   phrase: string,
-  otherDeviceType: DeviceType
+  otherDeviceType: DeviceType,
+  previousErr: string
 }>
 
 export type provisionUiPromptNewDeviceNameRpcParam = Exact<{
@@ -6643,7 +6644,8 @@ export type incomingCallMapType = Exact<{
       sessionID: int,
       secret: bytes,
       phrase: string,
-      otherDeviceType: DeviceType
+      otherDeviceType: DeviceType,
+      previousErr: string
     }>,
     response: {
       error: RPCErrorHandler,
