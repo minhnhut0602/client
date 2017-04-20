@@ -14,11 +14,12 @@ import (
 )
 
 // OutputSignatureSuccess prints the details of a successful verification.
-func OutputSignatureSuccess(ctx *Context, fingerprint libkb.PGPFingerprint, owner *libkb.User, signatureTime time.Time) {
+func OutputSignatureSuccess(ctx *Context, fingerprint libkb.PGPFingerprint, owner *libkb.User, signatureTime time.Time, maybeRevoked bool) {
 	arg := keybase1.OutputSignatureSuccessArg{
-		Fingerprint: fingerprint.String(),
-		Username:    owner.GetName(),
-		SignedAt:    keybase1.TimeFromSeconds(signatureTime.Unix()),
+		Fingerprint:  fingerprint.String(),
+		Username:     owner.GetName(),
+		SignedAt:     keybase1.TimeFromSeconds(signatureTime.Unix()),
+		MaybeRevoked: maybeRevoked,
 	}
 	ctx.PgpUI.OutputSignatureSuccess(context.TODO(), arg)
 }

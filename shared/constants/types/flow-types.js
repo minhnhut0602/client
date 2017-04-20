@@ -5478,7 +5478,8 @@ export type pgpUiOutputSignatureSuccessNonKeybaseRpcParam = Exact<{
 export type pgpUiOutputSignatureSuccessRpcParam = Exact<{
   fingerprint: string,
   username: string,
-  signedAt: Time
+  signedAt: Time,
+  maybeRevoked: boolean
 }>
 
 export type proveCheckProofRpcParam = Exact<{
@@ -6522,7 +6523,8 @@ export type incomingCallMapType = Exact<{
       sessionID: int,
       fingerprint: string,
       username: string,
-      signedAt: Time
+      signedAt: Time,
+      maybeRevoked: boolean
     }>,
     response: CommonResponseHandler
   ) => void,

@@ -36,6 +36,9 @@ func (p PgpUI) OutputSignatureSuccess(_ context.Context, arg keybase1.OutputSign
 	} else {
 		output("Signature verified. Signed by %s %s (%s).\n", un, humanize.Time(signedAt), signedAt)
 	}
+	if arg.MaybeRevoked == true {
+		p.w.Write([]byte(ColorString("yellow", "This key has a 3rd party revocation that couldn't be verified. Proceed with caution!\n")))
+	}
 	output("PGP Fingerprint: %s.\n", arg.Fingerprint)
 	return nil
 }

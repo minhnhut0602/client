@@ -9,6 +9,7 @@ import (
 
 	"github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
+	"github.com/keybase/go-crypto/openpgp"
 	"github.com/keybase/go-crypto/openpgp/armor"
 )
 
@@ -136,6 +137,31 @@ func (e *PGPEncrypt) Run(ctx *Context) error {
 	}
 
 	ks := newKeyset()
+
+	sk, err := NewScanKeys(ctx.SecretUI, e.G())
+	if err != nil {
+		return err
+	}
+
+	for _, up := range uplus {
+		for _, k := range up.Keys {
+			if len(k.Entity.Revocations) > 0 {
+				continue
+			}
+			if len(k.Entity.UnverifiedRevocations) > 0 {
+				if sig, _ := openpgp.FindVerifiedDesignatedRevoke(sk, k.Entity); sig != nil {
+					continue
+				}
+			}
+
+			ks.Add(k)
+		}
+	}
+
+	if len(ks.keys) == 0 {
+		return errors.New("Cannot encrypt - recipient does not have a non-revoked key.")
+	}
+
 	if !e.arg.NoSelf {
 		if mykey == nil {
 			// need to load the public key for the logged in user
@@ -148,12 +174,6 @@ func (e *PGPEncrypt) Run(ctx *Context) error {
 		// mykey could still be nil
 		if mykey != nil {
 			ks.Add(mykey)
-		}
-	}
-
-	for _, up := range uplus {
-		for _, k := range up.Keys {
-			ks.Add(k)
 		}
 	}
 

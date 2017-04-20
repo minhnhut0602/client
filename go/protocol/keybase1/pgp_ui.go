@@ -9,10 +9,11 @@ import (
 )
 
 type OutputSignatureSuccessArg struct {
-	SessionID   int    `codec:"sessionID" json:"sessionID"`
-	Fingerprint string `codec:"fingerprint" json:"fingerprint"`
-	Username    string `codec:"username" json:"username"`
-	SignedAt    Time   `codec:"signedAt" json:"signedAt"`
+	SessionID    int    `codec:"sessionID" json:"sessionID"`
+	Fingerprint  string `codec:"fingerprint" json:"fingerprint"`
+	Username     string `codec:"username" json:"username"`
+	SignedAt     Time   `codec:"signedAt" json:"signedAt"`
+	MaybeRevoked bool   `codec:"maybeRevoked" json:"maybeRevoked"`
 }
 
 type OutputSignatureSuccessNonKeybaseArg struct {

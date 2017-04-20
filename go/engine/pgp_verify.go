@@ -16,6 +16,8 @@ import (
 	"github.com/keybase/go-crypto/openpgp/armor"
 	"github.com/keybase/go-crypto/openpgp/clearsign"
 	"github.com/keybase/go-crypto/openpgp/packet"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type PGPVerifyArg struct {
@@ -161,7 +163,7 @@ func (e *PGPVerify) runDetached(ctx *Context) error {
 		}
 
 		fingerprint := libkb.PGPFingerprint(signer.PrimaryKey.Fingerprint)
-		OutputSignatureSuccess(ctx, fingerprint, e.signer, e.signStatus.SignatureTime)
+		OutputSignatureSuccess(ctx, fingerprint, e.signer, e.signStatus.SignatureTime, len(signer.UnverifiedRevocations) > 0)
 	}
 
 	return nil
@@ -198,6 +200,10 @@ func (e *PGPVerify) runClearsign(ctx *Context) error {
 	e.signer = sk.KeyOwnerByEntity(signer)
 	e.signStatus = &libkb.SignatureStatus{IsSigned: true}
 
+	desig, _ := openpgp.FindVerifiedDesignatedRevoke(sk, signer)
+	fmt.Printf("Designated revoke: %v\n", desig != nil)
+	_ = spew.Dump
+
 	if signer != nil {
 		e.signStatus.Verified = true
 		e.signStatus.Entity = signer
@@ -215,7 +221,7 @@ func (e *PGPVerify) runClearsign(ctx *Context) error {
 		}
 
 		fingerprint := libkb.PGPFingerprint(signer.PrimaryKey.Fingerprint)
-		OutputSignatureSuccess(ctx, fingerprint, e.signer, e.signStatus.SignatureTime)
+		OutputSignatureSuccess(ctx, fingerprint, e.signer, e.signStatus.SignatureTime, len(signer.UnverifiedRevocations) > 0)
 	}
 
 	return nil

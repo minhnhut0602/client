@@ -25,6 +25,10 @@
         {
           "name": "signedAt",
           "type": "Time"
+        },
+        {
+          "name": "maybeRevoked",
+          "type": "boolean"
         }
       ],
       "response": null
